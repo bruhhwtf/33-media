@@ -1,6 +1,9 @@
 """One JSON request per worker process; stdout is exclusively JSON events."""
 import json, sys, traceback
 from pathlib import Path
+# Embedded Windows Python omits the script directory from sys.path.
+# Resolve only our own trusted backend directory, never the working directory.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from engine import Engine, Cancelled, digest
 from segmentation import diagnostics, download
 

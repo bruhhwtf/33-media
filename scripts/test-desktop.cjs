@@ -8,7 +8,8 @@ const fs=require('node:fs'),os=require('node:os'),path=require('node:path'),asse
  const app=await electron.launch({args:[...(process.platform==='linux'?['--no-sandbox']:[]),path.resolve(__dirname,'..')],env:{...process.env,CUTLAB_PYTHON:process.env.CUTLAB_PYTHON||(process.platform==='win32'?'python':'python3')},timeout:30000});
  try{
   const page=await app.firstWindow();await page.waitForLoadState('domcontentloaded');const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.waitForFunction(()=>document.querySelector('footer .status-text')?.textContent==='Complete.',null,{timeout:30000});
+  await page.waitForFunction(()=>document.querySelector('footer .status-text')?.textContent==='Complete.'||!!document.querySelector('[role=alert]'),null,{timeout:30000});
+  assert.equal(await page.locator('[role=alert]').count(),0,await page.locator('[role=alert]').allTextContents().then(x=>x.join('\n')));
   const wizard=page.locator('.model-dialog .panel-title button');if(await wizard.isVisible())await wizard.click();
   await app.evaluate(({dialog},source)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[source]});},source);
   await page.getByRole('button',{name:'Import MP4',exact:true}).click();await page.locator('.media-item b').filter({hasText:'source with spaces.mp4'}).waitFor({timeout:30000});
