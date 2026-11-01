@@ -9,7 +9,7 @@
     "dev": "vite --host 127.0.0.1",
     "desktop": "electron .",
     "build": "tsc --noEmit && vite build",
-    "dist:win": "npm run build && electron-builder --win nsis --x64",
+    "dist:win": "npm run build && electron-builder --win nsis --x64 --publish never",
     "test": "python3 -m unittest discover -s tests -v",
     "test:desktop": "node scripts/test-desktop.cjs",
     "bundle:win": "python scripts/bundle-windows.py"
