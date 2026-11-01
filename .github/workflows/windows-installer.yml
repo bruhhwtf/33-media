@@ -1,0 +1,46 @@
+name: Build Windows installer
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    tags: ['v*']
+jobs:
+  installer:
+    runs-on: windows-2022
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          architecture: x64
+      - run: npm ci
+      - run: python scripts/bundle-windows.py
+      - name: Add bundled FFmpeg to test PATH
+        shell: pwsh
+        run: Add-Content $env:GITHUB_PATH "$pwd/vendor/runtime/bin"
+      - run: node --test tests/runtime.test.cjs
+      - run: vendor/runtime/python/python.exe -m unittest discover -s tests -v
+      - run: npm run build
+      - name: Test bundled Python and FFmpeg through Electron
+        shell: pwsh
+        run: |
+          $env:CUTLAB_RUNTIME = "$pwd/vendor/runtime"
+          $env:PATH = "$pwd/vendor/runtime/bin;$env:PATH"
+          $env:CUTLAB_PYTHON = "$pwd/vendor/runtime/python/python.exe"
+          npm run test:desktop
+      - run: npm run dist:win
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BANDKLAN-CUTLAB-Windows-x64
+          path: |
+            release/*.exe
+            release/*.blockmap
+          if-no-files-found: error

@@ -1,0 +1,78 @@
+{
+  "name": "bandklan-cutlab",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local cutout video editor",
+  "author": "BANDKLAN",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "desktop": "electron .",
+    "build": "tsc --noEmit && vite build",
+    "dist:win": "npm run build && electron-builder --win nsis --x64",
+    "test": "python3 -m unittest discover -s tests -v",
+    "test:desktop": "node scripts/test-desktop.cjs",
+    "bundle:win": "python scripts/bundle-windows.py"
+  },
+  "dependencies": {
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.0.10",
+    "@types/react-dom": "19.0.4",
+    "electron": "45.2.1",
+    "electron-builder": "26.18.0",
+    "ffmpeg-static": "5.2.0",
+    "ffprobe-static": "3.1.0",
+    "playwright-core": "1.58.2",
+    "typescript": "5.9.3",
+    "vite": "8.3.5"
+  },
+  "build": {
+    "appId": "com.bandklan.cutlab",
+    "productName": "BANDKLAN CUTLAB",
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "backend",
+        "to": "backend",
+        "filter": [
+          "**/*.py",
+          "*.txt"
+        ]
+      },
+      {
+        "from": "docs",
+        "to": "docs"
+      },
+      {
+        "from": "scripts",
+        "to": "scripts",
+        "filter": [
+          "*.ps1"
+        ]
+      },
+      {
+        "from": "vendor/runtime",
+        "to": "runtime"
+      }
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": true,
+      "allowToChangeInstallationDirectory": false,
+      "perMachine": false,
+      "createDesktopShortcut": true
+    },
+    "directories": {
+      "output": "release"
+    }
+  }
+}
