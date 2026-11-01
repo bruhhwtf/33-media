@@ -24,7 +24,7 @@ jobs:
       - name: Add bundled FFmpeg to test PATH
         shell: pwsh
         run: Add-Content $env:GITHUB_PATH "$pwd/vendor/runtime/bin"
-      - run: node --test tests/runtime.test.cjs
+      - run: node --test tests/runtime.test.cjs tests/storage.test.cjs
       - run: vendor/runtime/python/python.exe -m unittest discover -s tests -v
       - run: npm run build
       - name: Test bundled Python and FFmpeg through Electron

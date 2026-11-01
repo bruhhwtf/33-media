@@ -1,5 +1,7 @@
 const {contextBridge,ipcRenderer,webUtils}=require('electron');
 contextBridge.exposeInMainWorld('cutlab',{
+ storageInfo:()=>ipcRenderer.invoke('cutlab:storage-info'),
+ chooseStorage:()=>ipcRenderer.invoke('cutlab:choose-storage'),
  importVideo:()=>ipcRenderer.invoke('cutlab:import'),
  importDrop:file=>ipcRenderer.invoke('cutlab:drop',webUtils.getPathForFile(file)),
  setupAI:()=>ipcRenderer.invoke('cutlab:setup-ai'),

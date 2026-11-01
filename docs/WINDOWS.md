@@ -92,3 +92,18 @@ Linux build/tests pass; an actual Windows release build and real AI package/mode
 installation have not yet run. No downloadable installer is claimed until that
 workflow succeeds. Installer signing is not configured; unsigned Windows releases
 may display a SmartScreen warning.
+
+### Store AI and cache on D: or another drive
+
+Open **Model setup → Choose AI storage folder…** before installing AI. Select a
+folder on the desired drive; CUTLAB creates a BANDKLAN-CUTLAB subfolder, checks
+writability and at least 10 GB free space, and remembers it across restarts. Model
+packages, weights, frame/mask/render caches, pip's download cache and worker
+TEMP/TMP files use that drive. Only the small preference file, Electron profile
+and the installed application remain in their normal locations on C:.
+
+Changing locations preserves files at the old location; it does not move or delete
+them. Reinstall AI in the new location if needed. Once the new installation works,
+you may remove the old app-owned cache/runtime folders to reclaim space. Keep
+external drives connected while editing. Original footage and project files are
+never moved by this picker.
